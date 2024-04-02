@@ -1,0 +1,458 @@
+---
+title: "Sai Srikar Bandaru_M3_Project"
+
+output: html_document
+---
+---
+title: "SAI SRIKAR BANDARU_M3_PROJECT"
+output: html_document
+---
+
+<html>
+<head></head>
+<body>
+
+<CENTER>
+<FONT SIZE=4, COLOR="#8272E9"><B>M3_PROJECT_Assignment_1</B>
+<P>
+Your name: SAI Srikar Bandaru
+<BR>
+Your class name: ALY6000 
+<BR>
+Your instructor's name: Dr. Dee Chiluiza, PhD
+<BR>
+Date of submission: 02/02/2022
+</FONT>
+</CENTER>
+<P>
+
+---
+
+<P><BR>
+<FONT SIZE=3, COLOR="#8272E9">
+<B>INTRODUCTION</B>
+<FONT SIZE=3, COLOR = "#000000">
+
+1.<BR>
+-> Descriptive analysis - Descriptive statistics are typically distinguished from inferential statistics. With descriptive statistics you are simply describing what is or what the data shows. With inferential statistics, you are trying to reach conclusions that extend beyond the immediate data alone.  <BR>
+-> 
+    <BR>https://www.academia.edu/60366759/Assessing_Statistical_Reasoning_in_Descriptive_Statistics_A_Qualitative_Meta_Analysis accessed on 02/04/2022
+    
+    <BR>https://www.researchgate.net/post/For_a_paper_that_is_not_a_review_can_it_contain_only_descriptive_statistical_analysis  accessed on 02/01/2022
+    
+
+2.<BR>
+Although technology by itself cannot solve the global fishing crisis, it can be a catalytic element for the transformation of fisheries practices and policies. Under a sustainable approach — where we satisfy the needs of the present without compromising the resources of future generations. 
+
+<BR>https://www.sciencedirect.com/science/article/pii/S0308597X20308988?via%3Dihub
+
+<BR>https://www.mdpi.com/2071-1050/13/11/6037 accessed on 02/03/2022
+
+3.<BR>
+statistical analysis uses R, it can also present the data in terms of graphs,tables with clear pictures of structured data. R has found its way in many industries with promising results on its applications like banking, Finance, Healthcare, Social Media, E-commerce and so many. Below are some examples - 
+<BR>Optimization - Policy making and Management.
+<BR>Netflix/Application - Recommendation systems .
+<BR>Sports - Create real time reports and build strategies.
+<BR>E-commerce & Retail - Obtain results based on people preferences and bias. 
+<BR>
+</FONT>
+
+---
+<P>
+---
+
+<P><BR>
+<FONT SIZE=3, COLOR="#8272E9">
+<B>ANALYSIS SECTION</B>
+<BR></FONT>
+<P>
+
+---
+Library Data
+---
+
+```{r}
+# loading the necessary libraries!!!
+library(readr)
+
+library(readxl)
+
+library(openxlsx) #To read csv and xlsx type dataset types
+
+library(tidyverse)
+
+library(dplyr)
+
+library(plyr)
+
+library(magrittr)
+
+library(FSAdata)
+
+library(base)
+
+library(fishdata)
+
+library(knitr)
+
+library(kableExtra)
+
+library(DT) # Inorder tp create interactive tables
+
+library(FSA)
+library(RColorBrewer)
+
+xyxyz = read_excel("C:/MPS NEU/ALY6000/Data sets/inchBioM.xlsx")
+
+```
+
+
+
+
+---
+Task 1
+---
+
+<P><BR>
+<B><FONT SIZE=3, COLOR="#982855">
+<BR>
+</FONT></B>
+
+<P>
+
+```{r}
+summary(xyxyz)
+```
+
+<B><FONT SIZE=3, COLOR="#000000">
+<BR>Summary is a function that outputs the statistical values columnwise for the numerical dataset 
+<BR>And for the categorical values summary gives out the central tendency and counts of the different variables 
+<BR>
+</FONT></B>
+
+---
+Task 2
+---
+
+<P><BR>
+<B><FONT SIZE=3, COLOR="#982855">
+Task 2
+</FONT></B>
+
+<P>
+
+```{r}
+tibble::glimpse(xyxyz)
+```
+
+<BR>the function glimpse in tibble gives row wise dataset as a somma seperated set here with number of rows and columns in the given table 
+<BR>
+</FONT></B>
+
+---
+Task 3
+---
+
+<P><BR>
+<B><FONT SIZE=3, COLOR="#982855">
+Task 3
+</FONT></B>
+
+<P>
+
+```{r}
+#nrow(xyxyz)
+#ncol(xyxyz)
+NCOL(xyxyz)
+NROW(xyxyz)
+mean(xyxyz$length)
+mean(xyxyz$weight)
+
+# Answers to the questions in this task are neatly presentled below.
+print(paste("number of variables: ", ncol(xyxyz)))
+print(paste("number of observations: ", nrow(xyxyz)))
+print(paste("Mean of length is", round(mean(xyxyz$length), 2)))
+print(paste("mean of weight: ", round(mean(xyxyz$weight),2)))
+
+```
+
+
+
+---
+Task 4
+---
+
+<P><BR>
+<B><FONT SIZE=3, COLOR="#982855">
+Task 4
+</FONT></B>
+
+<P>
+
+```{r}
+library(tidyverse)
+knitr::kable(FSA::headtail(select(xyxyz,c(3:5)),6), caption = "First, Last 6")
+#datatable can also used for the same task.
+
+
+```
+
+---
+Task 5
+---
+
+<P>
+<B><FONT SIZE=3, COLOR="#982855">
+Task 5
+</FONT></B>
+
+<P>
+
+```{r}
+
+bio = as.data.frame(table(xyxyz$species))
+colnames(bio)=c("Species","Frequency")
+datatable(bio)
+frequency = bio$Frequency
+Spe = bio$Species
+bio=mutate(bio,CF=cumsum(frequency))
+CF = bio$CF
+bio=mutate(bio,Per=round(frequency/sum(frequency)*100,2))
+bio=mutate(bio,CP=cumsum(bio$Per))
+
+knitr::kable(bio, caption = "Updated table")
+
+```
+
+---
+Task 6
+---
+
+<P><BR>
+<B><FONT SIZE=3, COLOR="#982855">
+Task 6
+</FONT></B>
+
+<P>
+
+```{r Task 6, message=FALSE, warning=FALSE}
+par(mai=c(1,2.2,1,1))
+
+b1=barplot(frequency~Spe,horiz = T,las=1,xlim=c(0,250),
+             cex.axis=0.8,col=terrain.colors(7),
+             main = "Species and Frequency",xlab = "Frequency",ylab = "")
+text(frequency,b1,frequency,pos = 4)
+
+b2=barplot(CF~Spe,horiz = T,las=1,xlim=c(0,320),
+             cex.axis=0.8,col=terrain.colors(9),
+             main = "Cumulative Frequency v/s Species",xlab = "Cumulative Frequency",ylab = "")
+text(CF,b1,CF,pos = 4)
+
+b3=barplot(bio$Per~Spe,horiz = T,las=1,xlim=c(0,60),
+             cex.axis=0.8,col=terrain.colors(7),
+             main = "Box Plot of Percent",xlab = "Percentage",ylab = "")
+text(bio$Per,b1,bio$Per,pos = 4)
+
+b4=barplot(bio$CP~Spe,horiz = T,las=1,xlim=c(0,110),
+             cex.axis=0.6,cex.names = 0.4,
+           col=brewer.pal(7,"PuOr"),
+             main = "Cumulative Percent",xlab = "Cumulative Percentage",ylab = "")
+text(bio$CP,b1,bio$CP,pos = 4)
+
+```
+
+
+---
+Task 7
+---
+
+<P><BR>
+<B><FONT SIZE=3, COLOR="#982855">
+Task 7
+</FONT></B>
+  
+<P>
+
+```{r Task 7, message=FALSE, warning=FALSE}
+
+
+par(mai=c(1, 2,1,1))
+
+t7=barplot(frequency~Spe,horiz = T,
+               las=1,xlim=c(0,250),cex.axis=0.8,
+               col=brewer.pal(7,"PiYG"),main = "",xlab = "",ylab = "",cex.names=0.4)
+title(xlab="Frequency", line=3, cex.lab=1.2, col.lab="#330066")
+ title(ylab="Species", line=7, cex.lab=1.2, col.lab="#330066")
+text(frequency,b1,Spe,pos = 4)
+
+```
+
+---
+Task 8
+---
+
+<P><BR>
+<B><FONT SIZE=3, COLOR="#982855">
+Task 8 Bar plot with cumulative percentage.
+</FONT></B>
+  
+<P>
+
+
+```{r Task 8, message=FALSE, warning=FALSE}
+par(mai=c(1.3,1.6,1,2.5))
+
+t8_plot = barplot(frequency, width=0.7, space=0.15, border=NA, ylim=c(0,600), axes=FALSE, cex.names=0.7, names.arg=Spe, main = "Sai Srikar Bandaru", las=2,col= colorRampPalette(2,1))
+  axis(side = 2,at=c(0,220),las=1,col.axis="green",col = "blue",cex.axis=0.8)
+  axis(side = 4, at= c(0,CF), las =1, col.axis = "green",
+        col = "Red", cex.axis = 0.8)
+   mtext("Frequency", side=2, line=3, cex.lab=1, las=1, col="red")
+   mtext("Cumulative Frequencies", side=4, line=2, cex.lab=2, las=1, col="red")
+   lines(t8_plot, CF, type = "b", cex = 0.6, pch = 2, col="Blue") 
+
+```
+
+
+---
+Task 9 
+---
+
+<P><BR>
+<B><FONT SIZE=3, COLOR="#982855">
+Task 9 Box Plot 
+</FONT></B>
+
+<P>
+
+```{r Task 9, message=FALSE, warning=FALSE}
+
+box <- boxplot(xyxyz$length ~ xyxyz $species,
+        main="Box plot 9. Class example",
+        xlab="Species",
+        ylab="Length column",
+        ylim=c(0,600),
+        las=1,
+        col=c("lightblue"),
+        frame.plot=FALSE,
+        boxwex=0.8,
+        notch=FALSE,
+        outline = TRUE,
+        staplewex = 1,
+        cex.name = 0.4,
+        cex.lab = 1,
+        plot=TRUE)
+
+```
+<P>
+
+<B><FONT SIZE=3, COLOR="#982855">
+<BR>
+</FONT></B>
+
+
+---
+Task 10
+---
+
+<P><BR>
+<B><FONT SIZE=3, COLOR="#982855">
+Task 10 
+</FONT></B>
+
+<P>
+
+```{r , message=FALSE, warning=FALSE}
+plot <- (xyxyz %>% 
+           filter(species %in% c("Bluntnose Minnow", "Iowa Darter")))
+
+box_df <- boxplot((plot$length ~ plot$species),
+las = 1,
+main = "Bluntnose Minnow ~ Iowa Darter",
+boxwex = 0.8,
+xlab = "Species",
+ylab = "Length",
+cex.name = 0.7,
+cex.lab = 2,
+col = "#982855",
+outline = TRUE)
+text(y=boxplot.stats(plot$length)$stats,
+    labels = round(boxplot.stats(plot$length)$stats,0),
+x = 1.5,
+cex = 0.5,
+col ="RED")
+
+```
+
+
+
+---
+Task 11 scatter plot
+---
+
+<P><BR>
+<B><FONT SIZE=3, COLOR="#982855">
+Task 11. Scatter plot
+</FONT></B>
+
+<P>
+
+```{r Task 11, message=FALSE, warning=FALSE}
+
+plot(xyxyz$length,xyxyz$weight,
+     col=c("Red","yellow"),
+     xlab = "Length",
+     ylab = "Weight",
+     pch=c(3,20))
+
+```
+
+<P>
+---
+Final sections
+---
+
+<!--Title for Conclusions section-->
+<P><BR>
+<FONT SIZE = 4, COLOR = "#8272E9"><B>
+CONCLUSIONS
+</B></FONT>
+
+<P>
+
+
+<!--Title for Bibliography section-->
+<P><BR>
+<FONT SIZE = 3, COLOR = "#8272E9"><B>
+BIBLIOGRAPHY
+</B></FONT>
+
+
+<B><FONT SIZE=3, COLOR="#000000">
+<BR> With assignments becoming more prominent in the last few weeks, I have taken strides to learn tricks of the trade coming to report making and presentation skills.
+<BR>https://www.sportscidata.com/how-to-create-interactive-reports-with-r-markdown-part-i/ as accessed on 01/29/2022
+<BR>  https://www.mathworks.com/help/stats/boxplot.html accessed on 1/24/2022
+<BR> For several questions, I have used references from Prof. Dee, Phd  <BR> 
+<BR> https://discdown.org/rprogramming/reporting.html 
+<BR>
+</FONT></B>
+
+<P>
+
+
+<!--Title for Appendix section-->
+<P><BR>
+<FONT SIZE = 3, COLOR = "#8272E9"><B>
+APPENDIX
+</B></FONT>
+
+
+<B><FONT SIZE=3, COLOR="#000000">
+<BR>
+</FONT></B>
+
+<P>
+
+
+
+</body>
+</html>

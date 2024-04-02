@@ -1,0 +1,252 @@
+
+<CENTER>
+<FONT SIZE=5, COLOR="Black"><B>M6_Project</B>
+<P>
+Sai Srikar Bandaru
+<BR>
+ALY 6000
+<BR>
+Prof. Dr. Dee Chiluiza, PhD
+<BR>
+Date: 02/19/2022
+</FONT>
+</CENTER>
+<P>
+
+<P><BR>
+<FONT SIZE=3, COLOR="#8272E9">
+<B>INTRODUCTION</B>
+</FONT>
+
+Greetings from Srikar, I will be presenting a report from Global sales data set provided. This R markdown (Rmd) files encloses different plots like Boxplot, Bar and heat maps, etc for understaing the relations the features in the data. 
+ 
+<P>
+
+<P><BR>
+<FONT SIZE=3, COLOR="#8272E9">
+<B>ANALYSIS SECTION</B>
+</FONT>
+
+To begin with Analysis section, I have resorted to Exploratory Analysis (EDA) after reading through all the columns in the dataset. This comprises of categorical, numerical and Unique columns. So, while studying the plots I have taken columns worthy of studying the relation and making sturdy conclusions. 
+Sales is any important issue to tackle to boosting profits in any domains. End of the day, if and only if that company is making sales can they grow in the long run. Here we take a deep dive into locations, products sold under which division by mapping them to Profits, Net_Sales, etc. 
+
+Lets quickly now load the data and jump into the action!!!
+
+<P>
+
+```{r libraries, message=FALSE, warning=FALSE}
+
+#Enter the necessary libraries for project6Data!
+library(readr)
+library(readxl)
+
+library(dplyr)
+
+library(knitr)
+
+
+data = read_excel("C:/MPS NEU/ALY6000/Data sets/Project6Data.xlsx")
+View(data)
+
+```
+
+<P><BR>
+<B><FONT SIZE=3, COLOR="#982855">
+Task 1
+</FONT></B>
+<P>
+
+The 5 numerical variables are Profits, Losses, Sales_total, Price and Shipping cost product.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+DT_Profits = c(mean(data$Profits),sd(data$Profits),range(data$Profits),median(data$Profits))
+
+DT_Tot_loss = c(mean(data$Total_loss),sd(data$Total_loss),range(data$Total_loss),median(data$Total_loss))
+
+DT_sales_tot = c(mean(data$Sales_Total), sd(data$Sales_Total), range(data$Sales_Total), median(data$Sales_Total))
+
+DT_ship_cost = c(mean(data$ShippingCost_Product, sd(data$ShippingCost_Product), range(data$ShippingCost_Product),median(data$ShippingCost_Product)))
+
+DT_price = c(mean(data$Price), sd(data$Price), range(data$Price),median(data$Price))
+
+Table1 = round(cbind(DT_Profits , DT_Tot_loss, DT_sales_tot, DT_ship_cost, DT_price),2)
+
+knitr::kable(Table1, caption = "Desp. Stats : Sales Global Markets")
+
+
+
+```
+
+
+Now you're ready to witness the functions defined for plotting the data. Pay keen attention to axis of visualization, because they tell us a story. 
+
+```{r message=FALSE, warning=FALSE}
+
+par(mfrow = c(1, 2))
+boxplot(data$Price ~ data$Market)
+boxplot(Price ~ Market, data = data, pch = 18) # Equivalent
+
+par(mfrow=c(1,1))
+
+
+```
+
+2.2
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+boxplot(data$ShippingCost_Product,ylim = c(-5,100), main = "Box Plot Shipping Cost",xlab = "", ylab = "Shipping Cost", horizontal=T, col = "#E30B5C",border="black",col.main="coral4",col.lab="coral4")
+
+hist(data$ShippingCost_Product,  main = "Histogram Shipping Cost", xlab="Shipping Cost",breaks = 50, ylab = "Frequency Shipping Cost", border="black", col="#E30B5C",las=1,col.main="coral4",col.lab="coral4")
+```
+2.3
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+boxplot(data$Returns, main = "Box Plot Returns",xlab = "Returns", ylab = "Freq of Returns", horizontal=T,border="black",col = terrain.colors(7))
+
+hist(data$Returns,  main = "Histogram of Returns", xlab="Returns",breaks = 50, ylab = "Freq of Returns", border="black", col = terrain.colors(3))
+
+```
+2.4
+```{r message=FALSE, warning=FALSE}
+par(mfcol = c(2,1))
+
+boxplot(data$Discount, frame = FALSE, notch = FALSE, main = "BoxPlot Discount",xlab = "Discount", ylab = "Freq of Discount", horizontal=T, col = "#6B3FA0",border="black",col.main="burlywood4",col.lab="burlywood4")
+
+hist(data$Discount,  main = "Histogram Discount",xlim = c(0,0.4), xlab="Discount",breaks = 60, ylab = "Freq of Discount", border="black", col="#6B3FA0",las=1, col.main="burlywood4",col.lab="burlywood4")
+```
+
+3.1 1st variable: 
+```{r echo=TRUE, message=TRUE, warning=FALSE, fig.keep='all'}
+library(RColorBrewer)
+library(wesanderson)
+colorname=RColorBrewer::brewer.pal(5,"Set3")
+T_3.1= barplot(table(data$ShipMode),ylim=c(0,700),col=heat.colors(3),border="black", main = "BarPlot - Shipment mode",xlab = "Ship Mode", ylab = "Count:Shipment Order",col.main="Black",col.lab="Black", Font = 2)
+
+
+text(y=table(data$ShipMode),T_3.1, table(data$ShipMode), cex=0.9, pos=3)
+```
+
+#3.2
+
+```{r pressure, echo=TRUE, fig.keep='all'}
+colorname=RColorBrewer::brewer.pal(7,"BrBG")
+T_3.2= barplot(table(data$OrderPriority),ylim=c(0,700),col= brewer.pal(5,"BrBG"),border="black", main = "BarPlot - Order priority",xlab = "Order Emergency", ylab = "Count",col.main="BLue",col.lab="Black")
+
+
+text(y=table(data$OrderPriority),T_3.2, table(data$OrderPriority), cex=0.9, pos=3)
+```
+
+3.3
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+T_3.3 = dplyr::filter(data,Market =="Asia Pacific")
+a <-table(data$Market)
+library(lessR)
+library(plotrix)
+#T3<-PieChart(a,clockwise = TRUE,values ="%", main ="Pie chart of Market feature", las =1, cex.names = 0.6, col = brewer.pal(5,"Spectral")) 
+ t<-table(data$Market)
+ t3 <- pie(t, clockwise = TRUE, value= "%",main ="Pie chart of Market feature", las =1, cex.names = 0.6, col = brewer.pal(5,"Spectral"), border = "Black") 
+
+```
+Asia Pacific has an edge over Europre, followed by LATUM based countries and finally African and US,CA take their places. 
+
+
+
+3.4 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+T_3.3 = dplyr::filter(data,Department =="Technology")
+a <-table(data$Department)
+library(lessR)
+library(plotrix)
+T3<-PieChart(a,clockwise = TRUE,values ="%", main ="Department division", las =1, cex.names = 0.6, col = brewer.pal(5,"Spectral"))
+
+```
+
+
+#4.1
+For this task, I was curious to look upfront where are the PROFITS coming from, for instance, the area/regions.
+Q) From which all regions are my profits heaping!?
+That would help Branch managers or marketing heads stop spending on unneccessary investments. Rather they can try to change their policies and strategies for better sales in low profit hit areas.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+
+var_1 = tapply(data$Profits, INDEX = data$Region, FUN = mean)
+knitr::kable(var_1)
+
+boxplot(Profits ~ Region, data = data, frame = FALSE,ylim = c(0,10000), cex.axis = 0.5, las= 1.4, ces.value = 0.3  ,col = c("#999999", "#E69F00", "#56B4E9"))
+
+
+```
+Observation: Canada recorded the lowest in terms of profits earned where as it was Western Europre which bags the highest profits. 
+
+
+
+#4.2
+```{r echo=FALSE, message=FALSE, warning=TRUE}
+xxyyzz =tapply(data$Price, INDEX = data$Division, FUN = median)
+knitr::kable(xxyyzz)
+
+T_4.2 = plot(xxyyzz, ylim = c(0,800), xlim = c(0,20), main = "Products Quantity wise", xlab = "Division", ylab = "Price", col = "Black", pch = 21, col.lab = 6)
+
+```
+From the scatter plot, we see the data points which respresent the median of 17 types of Division alongwith their median prices. As portrayed above, Tables are on the upper most end of division with 684.18 as their median price. On the flip side, we see ts the Lables aa the bottom most with med price as 159.91 
+Rest of other varients are mostly concentrated in the 400-500 mark. 
+
+#4.3
+Final part of this task, I wanted to learn the trend set and behavioural pattern of customers. So, my next question to myself;
+Q). 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+xyz =tapply(data$Net_Sale, INDEX = data$Segment, FUN = sd)
+knitr::kable(xyz)
+
+
+```
+Observartion: The standard deviation function for segment and Net sales tell us simple story, which is, Corporate and Home office are facing a stiff competetion and consumer market is the people's favourite.
+
+
+#5.0
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library (dplyr)
+Central_US <- data %>% filter(data$Region == "Central US")
+Central_US
+
+
+```
+
+##
+6.0
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+Market <- data  %>%
+  group_by(data$Market) %>% 
+  summarise(Net_Sale_=mean(Net_Sale, na.rm = TRUE))
+Market
+
+
+```
+
+
+
+7.0
+CONCLUSIONS:
+
+To conclude, we can say that our data analysis and visualizations have proven to be fruitful drving us to few points as my results;
+Highest sale is in Asia Pacifix and lowest is in Africa.
+Highest order priority of Medium is 508 and lowest is Low which is 45. 
+Highest total market profit is in Latam and lowest is in Africa.
+Lowest sale is in Canada and Highest is in Central Asia
+
+
+REFERENCES: 
+
+SwapniloKhande [Mar 2019] Global Market Analysis. Retrived on /0216/2022
+https://github.com/Swapnillokhande/Global-Order-Analysis/commit/d5d7928e85d146ab4213906bb16ed0dac150a5f3
+
+
+Stephanie Chevalier [Feb 4, 2022] Retail Sales from 2014 to 2025 forecast and trends
+Retrieved on /0218/2022
+https://www.statista.com/statistics/379046/worldwide-retail-e-commerce-sales/
+
+
+Bahadir, S. C., Bharadwaj, S. G., & Srivastava, R. K. (2015). Marketing mix and brand sales in global markets: Examining the contingent role of country-market characteristics. Journal of International Business Studies, 46(5), 596–619. https://doi.org/10.1057/jibs.2014.69
