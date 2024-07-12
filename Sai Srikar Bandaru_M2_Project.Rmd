@@ -21,7 +21,6 @@ Your class name: ALY6000
 <BR>
 Your instructor's name: Dr. Dee Chiluiza, PhD
 <BR>
-Date of submission: 02/04/2022
 </FONT>
 </CENTER>
 <P>
